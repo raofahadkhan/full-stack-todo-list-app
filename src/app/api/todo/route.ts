@@ -1,28 +1,32 @@
-import { db } from "@vercel/postgres";
+import { QueryResult, sql } from "@vercel/postgres";
 import { NextRequest, NextResponse } from "next/server";
+import { NewTodo, Todo, db, todoTable } from "@/lib/drizzle";
 
 export async function GET(request: NextRequest) {
-	const client = await db.connect();
-
 	try {
-		await client.sql`CREATE TABLE IF NOT EXISTS Todos(id SERIAL, Task varchar(255));`;
-		const res = await client.sql`SELECT * FROM Todos`;
-		console.log(res.rows.find((item) => item.id === 3));
+		await sql`CREATE TABLE IF NOT EXISTS Todos(id SERIAL, Task varchar(255));`;
+
+		const res = await db.select().from(todoTable);
+
 		return NextResponse.json({ data: res });
-	} catch (error) {
-		console.log(error);
-		return NextResponse.json({ message: "Something Went Wrong" });
+	} catch (err) {
+		console.log((err as { message: string }).message);
+		return NextResponse.json({ message: (err as { message: string }).message });
 	}
 }
 
 export async function POST(request: NextRequest) {
-	const client = await db.connect();
 	const req = await request.json();
 
 	try {
 		if (req.task) {
-			const res =
-				await client.sql`INSERT INTO Todos(Task) VALUES(${req.task});`;
+			const res = db
+				.insert(todoTable)
+				.values({
+					task: req.task,
+				})
+				.returning()
+				.execute();
 			console.log({ res });
 
 			return NextResponse.json({ message: "Task added successfully" });

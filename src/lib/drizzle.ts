@@ -11,13 +11,12 @@ import {
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 
-export const todoTable = pgTable("Todos", {
+export const todoTable = pgTable("todos", {
 	id: serial("id").primaryKey(),
-	task: varchar("Task", { length: 255 }).notNull(),
+	task: varchar("task", { length: 255 }).notNull(),
 });
 
 export type Todo = InferModel<typeof todoTable>;
 export type NewTodo = InferModel<typeof todoTable, "insert">;
 
 export const db = drizzle(sql);
-
