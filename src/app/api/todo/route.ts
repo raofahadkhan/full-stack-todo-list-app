@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
 	try {
 		if (req.task) {
-			const res = db
+			const res = await db
 				.insert(todoTable)
 				.values({
 					task: req.task,
