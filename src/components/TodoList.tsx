@@ -1,8 +1,9 @@
+import BASE_PATH from "@/lib/basepath";
 import { Todo } from "@/lib/drizzle";
 
 const getData = async () => {
 	try {
-		const res = await fetch("/api/todo", {
+		const res = await fetch(`${BASE_PATH}/api/todo`, {
 			cache: "no-store",
 		});
 		if (!res.ok) {
