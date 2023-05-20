@@ -20,7 +20,7 @@ const TodoList = async () => {
 
 	return (
 		<div className="max-h-[450px] overflow-scroll mb-4">
-			{res.data.map((item) => {
+			{res && res.data.map((item) => {
 				return (
 					<div
 						key={item.id}
