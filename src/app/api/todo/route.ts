@@ -77,3 +77,50 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+
+export async function PUT(request: NextRequest) {
+    // Parsing the URL to get the 'id' query parameter
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
+
+    // Validating the presence of 'id'
+    if (!id) {
+        return NextResponse.json({ message: "Todo id is required" }, { status: 400 });
+    }
+
+    // Parsing and validating the request body
+    let reqBody;
+    try {
+        reqBody = await request.json();
+    } catch (err) {
+        return NextResponse.json({ message: "Invalid JSON" }, { status: 400 });
+    }
+
+    const { task } = reqBody;
+    if (!task) {
+        return NextResponse.json({ message: "New task is required" }, { status: 400 });
+    }
+
+    try {
+        // Assuming 'id' is an integer, parsing it to ensure correct data type
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            return NextResponse.json({ message: "Invalid todo id" }, { status: 400 });
+        }
+
+        // Update the todo item in the database
+        const res = await sql`
+            UPDATE TODOS
+            SET task = ${task}
+            WHERE id = ${numericId}
+        `;
+
+        // You might need to adjust this depending on your SQL library's behavior
+        // and how it indicates successful updates or no-ops (e.g., no matching row)
+        return NextResponse.json({ message: "Todo updated successfully" });
+    } catch (error: any) {
+        console.error("Error details:", error);
+        return NextResponse.json({ message: "An error occurred", error: error.message }, { status: 500 });
+    }
+}
+
