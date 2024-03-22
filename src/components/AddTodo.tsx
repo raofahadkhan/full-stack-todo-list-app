@@ -24,7 +24,7 @@ const AddTodo = () => {
 	};
 	return (
 		<div>
-			<form className="w-full flex gap-x-3 ">
+			<form className="w-full flex gap-x-3 " onSubmit={handleSubmit}>
 				<input
 					type="text"
 					className="rounded-full w-full py-3.5 px-5 focus:outline-secondary border"
