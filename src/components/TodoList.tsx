@@ -22,8 +22,10 @@ const TodoList = async () => {
   const res: { data: Todo[] } = await getData();
 
   return (
-    <div className="max-h-[450px] overflow-scroll mb-4">
-      {res &&
+    <div className="h-[450px] overflow-y-auto mb-4">
+      {res.data.length === 0 ? (
+        <h3 className="flex items-center mx-auto">No Todos Found!</h3>
+      ) : (
         res.data.reverse().map((item) => {
           return (
             <div
@@ -37,7 +39,8 @@ const TodoList = async () => {
               <DeleteTodo todoId={item.id} />
             </div>
           );
-        })}
+        })
+      )}
     </div>
   );
 };

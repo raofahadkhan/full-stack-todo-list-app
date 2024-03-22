@@ -6,12 +6,14 @@ import React, { useState } from "react";
 
 const AddTodo = () => {
   const [task, setTask] = useState<NewTodo | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const { refresh } = useRouter();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
       if (task?.task) {
+        setLoading(true);
         const res = await fetch("/api/todo", {
           method: "POST",
           body: JSON.stringify({ task: task.task }),
@@ -24,6 +26,8 @@ const AddTodo = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -39,6 +43,7 @@ const AddTodo = () => {
           type="button"
           className="p-4 rounded-full shrink-0 bg-gradient-to-b from-primary to-secondary"
           onClick={handleSubmit}
+          disabled={loading}
         >
           <Image src={"/vector.png"} alt="vector" width={20} height={20} />
         </button>
